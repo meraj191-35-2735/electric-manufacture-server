@@ -73,6 +73,20 @@ async function run() {
       res.send(reviews);
     });
 
+    app.post("/review", async (req, res) => {
+      const review = req.body;
+      console.log(review);
+      const query = {
+        name: review.name,
+        country: review.country,
+        stars: review.stars,
+        des: review.des,
+        image: review.image,
+      };
+      const result = await reviewCollection.insertOne(query);
+      return res.send({ success: true, result });
+    });
+
     app.get("/user", verifyJWT, async (req, res) => {
       const users = await userCollection.find().toArray();
       res.send(users);
