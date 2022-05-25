@@ -68,6 +68,11 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/review", async (req, res) => {
+      const reviews = await reviewCollection.find().toArray();
+      res.send(reviews);
+    });
+
     app.get("/user", verifyJWT, async (req, res) => {
       const users = await userCollection.find().toArray();
       res.send(users);
