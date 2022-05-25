@@ -37,15 +37,22 @@ function verifyJWT(req, res, next) {
 async function run() {
   try {
     await client.connect();
+
     const toolCollection = client
       .db("electric_manufacturing")
       .collection("tools");
+
     const bookingCollection = client
       .db("electric_manufacturing")
       .collection("bookings");
+
     const userCollection = client
       .db("electric_manufacturing")
       .collection("users");
+
+    const reviewCollection = client
+      .db("electric_manufacturing")
+      .collection("reviews");
 
     app.get("/tool", async (req, res) => {
       const query = {};
@@ -81,6 +88,31 @@ async function run() {
         { expiresIn: "3h" }
       );
       res.send({ result, token });
+    });
+
+    app.put("/user/admin/:email", verifyJWT, async (req, res) => {
+      const email = req.params.email;
+      const requester = req.decoded.email;
+      const requesterAccount = await userCollection.findOne({
+        email: requester,
+      });
+      if (requesterAccount.role === "admin") {
+        const filter = { email: email };
+        const updateDoc = {
+          $set: { role: "admin" },
+        };
+        const result = await userCollection.updateOne(filter, updateDoc);
+        res.send(result);
+      } else {
+        res.status(403).send({ message: "FORBIDDEN Access" });
+      }
+    });
+
+    app.get("/admin/:email", async (req, res) => {
+      const email = req.params.email;
+      const user = await userCollection.findOne({ email: email });
+      const isAdmin = user.role === "admin";
+      res.send({ admin: isAdmin });
     });
 
     app.get("/booking", verifyJWT, async (req, res) => {
