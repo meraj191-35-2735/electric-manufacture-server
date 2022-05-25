@@ -26,6 +26,9 @@ async function run() {
     const toolCollection = client
       .db("electric_manufacturing")
       .collection("tools");
+    const bookingCollection = client
+      .db("electric_manufacturing")
+      .collection("bookings");
 
     app.get("/tool", async (req, res) => {
       const query = {};
@@ -38,6 +41,18 @@ async function run() {
       const query = { _id: ObjectId(id) };
       const result = await toolCollection.findOne(query);
       res.send(result);
+    });
+    app.post("/booking", async (req, res) => {
+      const booking = req.body;
+      const query = {
+        tool: booking.bookedItem,
+        user: booking.user,
+        quantity: booking.quantity,
+        username: booking.userName,
+        phone: booking.phone,
+      };
+      const result = await bookingCollection.insertOne(booking);
+      return res.send({ success: true, result });
     });
   } finally {
   }
