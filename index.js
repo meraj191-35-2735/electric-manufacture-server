@@ -159,7 +159,10 @@ async function run() {
       const isAdmin = user.role === "admin";
       res.send({ admin: isAdmin });
     });
-
+    app.get("/booking", verifyJWT, async (req, res) => {
+      const result = await bookingCollection.find().toArray();
+      res.send(result);
+    });
     app.get("/booking", verifyJWT, async (req, res) => {
       const user = req.query.user;
       const decodedEmail = req.decoded.email;
