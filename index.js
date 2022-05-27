@@ -74,7 +74,7 @@ async function run() {
       const result = await toolCollection.insertOne(query);
       res.send(result);
     });
-
+    //get the exact tool
     app.get("/tool/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
