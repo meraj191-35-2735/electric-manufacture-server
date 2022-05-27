@@ -61,6 +61,20 @@ async function run() {
       res.send(tools);
     });
 
+    app.post("/tool", verifyJWT, async (req, res) => {
+      const tool = req.body;
+      const query = {
+        name: tool.name,
+        description: tool.description,
+        minimumOrder: tool.minimumOrder,
+        availableQuantity: tool.availableQuantity,
+        price: tool.price,
+        image: tool.image,
+      };
+      const result = await toolCollection.insertOne(query);
+      res.send(result);
+    });
+
     app.get("/tool/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
@@ -82,7 +96,6 @@ async function run() {
 
     app.post("/review", async (req, res) => {
       const review = req.body;
-      console.log(review);
       const query = {
         name: review.name,
         country: review.country,
