@@ -68,6 +68,13 @@ async function run() {
       res.send(result);
     });
 
+    app.delete("/tool/:id", verifyJWT, async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await toolCollection.deleteOne(query);
+      res.send(result);
+    });
+
     app.get("/review", async (req, res) => {
       const reviews = await reviewCollection.find().toArray();
       res.send(reviews);
