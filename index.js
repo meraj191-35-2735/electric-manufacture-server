@@ -61,7 +61,7 @@ async function run() {
       res.send(tools);
     });
 
-    app.post("/tool", verifyJWT, async (req, res) => {
+    app.post("/tool", async (req, res) => {
       const tool = req.body;
       const query = {
         name: tool.name,
@@ -124,7 +124,7 @@ async function run() {
       const token = jwt.sign(
         { email: email },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "3h" }
+        { expiresIn: "1h" }
       );
       res.send({ result, token });
     });
@@ -177,13 +177,6 @@ async function run() {
 
     app.post("/booking", async (req, res) => {
       const booking = req.body;
-      const query = {
-        tool: booking.bookedItem,
-        user: booking.user,
-        quantity: booking.quantity,
-        username: booking.userName,
-        phone: booking.phone,
-      };
       const result = await bookingCollection.insertOne(booking);
       return res.send({ success: true, result });
     });
